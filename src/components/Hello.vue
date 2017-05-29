@@ -1,16 +1,23 @@
 <template>
   <div id="main">
-    <input type="text" name="gh-username" placeholder="Search for a GitHub username..." v-model="username" v-on:keydown.13="search">
+
+    <input type="text" name="gh-username" placeholder="Search for a GitHub username..." v-model="username" v-on:keydown.13="search" :class="{ 'has-error': error }">
+
     <span class="loading" v-if="loading">Searching GitHub for "{{ username }}"...</span>
-    <div class="results" v-if="results && !loading">
-        <img v-if="results.avatar_url" :src="results.avatar_url" :alt="'GitHub Avatar for ' + username ">
-        <h4 v-if="results.name">{{ results.name }}</h4>
-        <i v-if="results.bio">{{ results.bio }}</i>
-        <p v-if="results.location">{{ results.location }}</p>
+
+    <div class="box" v-if="results && !loading || error && !loading">
+
+        <div v-if="results">
+            <img v-if="results.avatar_url" :src="results.avatar_url" :alt="'GitHub Avatar for ' + username ">
+            <h4 v-if="results.name">{{ results.name }}</h4>
+            <i v-if="results.bio">{{ results.bio }}</i>
+            <p v-if="results.location">{{ results.location }}</p>
+        </div>
+
+        <span v-if="error">Sorry, can't find a user called "<i>{{ username }}</i>"!</span>
+
     </div>
-    <div class="results" v-if="error && !loading">
-        Sorry, can't find a user called "<i>{{ username }}</i>"!
-    </div>
+
   </div>
 </template>
 
@@ -82,7 +89,11 @@ input {
     padding: 15px 25px;
     margin: 45px auto;
 }
-.results {
+.has-error {
+    border: 1px solid #96281B;
+    outline: none;
+}
+.box {
     display: block;
     width: 350px;
     max-width: 74%;
@@ -92,7 +103,7 @@ input {
     border: 1px solid #D2D7D3;
     text-align: center;
 }
-.results img {
+.box img {
     display: block;
     width: 100px;
     height: auto;
